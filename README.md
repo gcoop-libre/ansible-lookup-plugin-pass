@@ -34,7 +34,7 @@ absolute path of the password store you want to use.
 
 You can use parameters to control how `pass generate` will be called.
 
-* **`length`:** length of the generated password (default: `20`).
+* **`length`:** length of the generated password (default: `32`).
 * **`symbols`:** include symbols in the generated password (default: `False`).
 
 ### Example

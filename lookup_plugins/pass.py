@@ -34,7 +34,7 @@ if os.getenv('ANSIBLE_PASS_PASSWORD_STORE_DIR') is not None:
 
 PASS_EXEC = 'PASSWORD_STORE_DIR=%s pass' % PASSWORD_STORE_DIR
 
-DEFAULT_LENGTH = 20
+DEFAULT_LENGTH = 32
 VALID_PARAMS = frozenset(('length', 'symbols'))
 
 def _parse_parameters(term):
