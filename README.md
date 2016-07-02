@@ -10,13 +10,14 @@ If the password doesn't exist it will be generated.
 
 ## Usage
 
-First, add in `ansible.cfg` the next line:
+Clone this repository in a directory of your choice and tell ansible to look for
+plugins there by setting something like this in `ansible.cfg`:
 
 ```
-lookup_plugins=~/ansible-lookup-plugin-pass/lookup_plugins
+lookup_plugins=/path/to/ansible/plugins
 ```
 
-Just use it as you would use the password lookup, but with the path to your
+Then just use it as you would use the password lookup, but with the path to your
 password instead of the path to a file. For example, if you would normally get
 your password with
 
@@ -24,25 +25,26 @@ your password with
 $ pass path/to/your/password
 ```
 
-you would get it like this in a playbook
+you would use it like this in a playbook to set the password of a user
 
 ```yaml
 vars:
-    password: "{{ lookup('pass', 'path/to/your/password') }}"
+  password: "{{ lookup('pass', 'path/to/your/password') }}"
 
 tasks:
-
-    - name: set password for user debian                                
-      user: name=debian                                               
-            password='{{ password | password_hash('sha512') }}'       
-            state=present                                             
-            shell=/bin/bash 
+  - name: set password for user debian
+    user:
+      name: debian
+      password: "{{ password | password_hash('sha512') }}"
+      state: present
+      shell: /bin/bash
 ```
+
+## Settings
 
 By default it uses `~/.password-store` as the password store. If you need to
 change this set the `ANSIBLE_PASS_PASSWORD_STORE_DIR` environment variable to the
 absolute path of the password store you want to use.
-
 
 ## Parameters
 
