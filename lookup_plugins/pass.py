@@ -35,7 +35,7 @@ if os.getenv('ANSIBLE_PASS_PASSWORD_STORE_DIR') is not None:
 PASS_EXEC = 'PASSWORD_STORE_DIR=%s pass' % PASSWORD_STORE_DIR
 
 DEFAULT_LENGTH = 32
-VALID_PARAMS = frozenset(('length', 'symbols'))
+VALID_PARAMS = frozenset(('length', 'symbols', 'regenerate'))
 
 def _parse_parameters(term):
     # Hacky parsing of params taken from password lookup.
@@ -72,6 +72,11 @@ def _parse_parameters(term):
         params['symbols'] = True
     else:
         params['symbols'] = False
+    regenerate = params.get('regenerate', 'False')
+    if regenerate.lower() in ['true', 'yes']:
+        params['regenerate'] = True
+    else:
+        params['regenerate'] = False
 
     return name, params
 
@@ -110,6 +115,13 @@ class LookupModule(LookupBase):
             https://github.com/ansible/ansible/issues/6550
             '''
             name, params = _parse_parameters(term)
+            if params['regenerate']:
+                try:
+                    generate_password(name, params['length'], params['symbols'])
+                    display.vvv('Generated password for %s' % name)
+                except Exception as e:
+                    raise AnsibleError("lookup_plugin.pass(%s) returned %s" % (term, e.message))
+
             try:
                 password = get_password(term)
             except:
