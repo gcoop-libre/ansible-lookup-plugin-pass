@@ -106,12 +106,14 @@ def get_password(path):
         return stdout.rstrip()
     raise Exception(stderr)
 
-def generate_password(path, length, symbols):
+def generate_password(path, length, symbols, force=False):
     """Generate password using pass."""
     command = '%s generate %s %s' % (PASS_EXEC, path, length)
     display.vvv('COMMAND: %s' % command)
     if not symbols:
         command = command + ' -n'
+    if force:
+        command = command + ' -f'
 
     p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     (stdout, stderr) = p.communicate()
@@ -133,7 +135,7 @@ class LookupModule(LookupBase):
             name, params = _parse_parameters(term)
             if params['regenerate']:
                 try:
-                    generate_password(name, params['length'], params['symbols'])
+                    generate_password(name, params['length'], params['symbols'], True)
                     display.vvv('Generated password for %s' % name)
                 except Exception as e:
                     raise AnsibleError("lookup_plugin.pass(%s) returned %s" % (term, e.message))
