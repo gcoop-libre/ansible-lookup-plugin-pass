@@ -52,11 +52,12 @@ You can use parameters to control how `pass generate` will be called.
 
 * **`length`:** length of the generated password (default: `32`).
 * **`symbols`:** include symbols in the generated password (default: `False`).
+* **`regenerate`:** force the generation of a new password (default: `False`).
 
 ### Example
 
 ```yaml
-password: "{{ lookup('pass', 'path/to/your/password length=16 symbols=True') }}"
+password: "{{ lookup('pass', 'path/to/your/password length=16 symbols=True regenerate=True') }}"
 
 ```
 
