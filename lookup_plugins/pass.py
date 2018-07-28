@@ -103,7 +103,7 @@ def get_password(path):
     p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     (stdout, stderr) = p.communicate()
     if p.returncode == 0:
-        return stdout.rstrip()
+        return stdout.splitlines()[0].decode('utf-8')
     raise Exception(stderr)
 
 def generate_password(path, length, symbols, force=False):
