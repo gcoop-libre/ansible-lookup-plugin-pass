@@ -51,7 +51,7 @@ if os.getenv('ANSIBLE_PASS_PASSWORD_STORE_DIR') is not None:
 PASS_EXEC = 'PASSWORD_STORE_DIR=%s pass' % PASSWORD_STORE_DIR
 
 DEFAULT_LENGTH = 32
-VALID_PARAMS = frozenset(('length', 'symbols', 'regenerate'))
+VALID_PARAMS = frozenset(('length', 'symbols', 'regenerate', 'multiline'))
 
 def _parse_parameters(term):
     # Hacky parsing of params taken from password lookup.
@@ -97,13 +97,17 @@ def _parse_parameters(term):
     return name, params
 
 
-def get_password(path):
+def get_password(path, multiline=False):
     """Get password from pass."""
     command = '%s show %s' % (PASS_EXEC, path)
     p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     (stdout, stderr) = p.communicate()
     if p.returncode == 0:
-        return stdout.splitlines()[0].decode('utf-8')
+        if multiline:
+            output = stdout
+        else:
+            output = stdout.splitlines()[0]
+        return output.decode('utf-8')
     raise Exception(stderr)
 
 def generate_password(path, length, symbols, force=False):
@@ -141,7 +145,7 @@ class LookupModule(LookupBase):
                     raise AnsibleError("lookup_plugin.pass(%s) returned %s" % (term, e.message))
 
             try:
-                password = get_password(term)
+                password = get_password(term, params.get('multiline', False))
             except:
                 try:
                     generate_password(name, params['length'], params['symbols'])

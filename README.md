@@ -54,10 +54,23 @@ You can use parameters to control how `pass generate` will be called.
 * **`symbols`:** include symbols in the generated password (default: `False`).
 * **`regenerate`:** force the generation of a new password (default: `False`).
 
+By default only the first line of a pass entry is returned when looking up an
+existing password. Setting the `multiline` parameter to `True` will cause the
+full contents of the file to be returned.
+
 ### Example
+
+Generate a new 16 character password including symbols:
 
 ```yaml
 password: "{{ lookup('pass', 'path/to/your/password length=16 symbols=True regenerate=True') }}"
+
+```
+
+Return the full content of an existing pass entry:
+
+```yaml
+password: "{{ lookup('pass', 'path/to/your/password multiline=True') }}"
 
 ```
 
