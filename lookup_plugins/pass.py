@@ -99,7 +99,7 @@ def _parse_parameters(term):
 
 def get_password(path):
     """Get password from pass."""
-    command = '%s show %s' % (PASS_EXEC, path)
+    command = '%s show "%s"' % (PASS_EXEC, path)
     p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     (stdout, stderr) = p.communicate()
     if p.returncode == 0:
