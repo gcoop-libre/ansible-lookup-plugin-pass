@@ -44,14 +44,12 @@ from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
 from ansible.parsing.splitter import parse_kv
 
-PASSWORD_STORE_DIR = '~/.password-store'
-if os.getenv('ANSIBLE_PASS_PASSWORD_STORE_DIR') is not None:
-    PASSWORD_STORE_DIR = os.environ['ANSIBLE_PASS_PASSWORD_STORE_DIR']
+DEFAULT_PASSWORD_STORE_DIR = '~/.password-store'
 
-PASS_EXEC = 'PASSWORD_STORE_DIR=%s pass' % PASSWORD_STORE_DIR
+PASS_EXEC = 'pass'
 
 DEFAULT_LENGTH = 32
-VALID_PARAMS = frozenset(('length', 'symbols', 'regenerate'))
+VALID_PARAMS = frozenset(('length', 'symbols', 'regenerate', 'password_dir'))
 
 def _parse_parameters(term):
     # Hacky parsing of params taken from password lookup.
@@ -82,6 +80,7 @@ def _parse_parameters(term):
         raise AnsibleError('Unrecognized parameter(s) given to password lookup: %s' % ', '.join(invalid_params))
 
     # Set defaults
+    PASS_EXEC = 'PASSWORD_STORE_DIR=%s pass' % params.get('password_dir', os.getenv('ANSIBLE_PASS_PASSWORD_STORE_DIR', DEFAULT_PASSWORD_STORE_DIR))
     params['length'] = int(params.get('length', DEFAULT_LENGTH))
     symbols = params.get('symbols', 'False')
     if symbols.lower() in ['true', 'yes']:
