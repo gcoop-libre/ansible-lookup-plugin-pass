@@ -43,8 +43,9 @@ tasks:
 ## Settings
 
 By default it uses `~/.password-store` as the password store. If you need to
-change this set the `ANSIBLE_PASS_PASSWORD_STORE_DIR` environment variable to the
-absolute path of the password store you want to use.
+change this set the `ANSIBLE_PASS_PASSWORD_STORE_DIR` environment variable or
+the `password_store` parameter to the absolute path of the password store you
+want to use.
 
 ## Parameters
 
@@ -53,6 +54,7 @@ You can use parameters to control how `pass generate` will be called.
 * **`length`:** length of the generated password (default: `32`).
 * **`symbols`:** include symbols in the generated password (default: `False`).
 * **`regenerate`:** force the generation of a new password (default: `False`).
+* **`password_store`:** the password store where the password is located (default: value of `ANSIBLE_PASS_PASSWORD_STORE_DIR`, if not set `~/.password-store`).
 
 ### Example
 
